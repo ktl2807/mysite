@@ -1,0 +1,73 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% block title %}
+{{ product.name }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <main class="pt-5">
+        <div class="row g-3">
+            <div class="col-md-5 col-lg-5 order-md-first bg-light">
+                <img class="img-fluid mx-auto d-block"  alt="Responsive image" src="{{ product.image.url }}">
+            </div>
+            <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
+                <h1 class="mb-0 h4">{{ product.trip_name }}</h1>
+                <h4 class="subtitle"> Stars: {% if product.get_rating == 0 %}No ratings yet{% else %}{{ product.get_rating|floatformat:1 }}{% endif %}</h4>
+                <p><span class="lead">{{ product.trip_city }}</span> (City)</p>
+                <B> What to expect</B>
+                <p>{{ product.description }}</p>
+                
+                <div class="border">
+                    <div class="col border-bottom">
+                        <div class="row p-3">
+                            <div class="col-6">Price</div>
+                            <div class="col-6 text-end"><span class="h4 fw-bold">${{ product.price }}</span></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row p-3">
+                            <div class="col-6">
+                                <label for="select">Qty</label>
+                                <select id="select">
+                                    <option value="">1</option>
+                                    <option value="">2</option>
+                                    <option value="">3</option>
+                                    <option value="">4</option>
+                                </select>
+
+                            </div>
+                            <div class="col-6 text-end">
+                                <button type="button" id="add-button" value="{{product.id}}" class="btn btn-secondary btn-sm"> Add to basket</button></div>
+                        </div>
+                    </li></ul></div></div></div> <div data-test="ActivityComponent__address" class="src-shared_component-components-apiHtmlContent-1KaC src-shared_component-sections-ActivityMap-blockWhereText-1Adp"><p></p></div> <div class="src-shared_component-sections-ActivityMap-blockWhereMeetingPoint-2qwH"><img src="//staticv4.imgix.net/icons/meeting_point.svg" crossorigin="anonymous" class="src-shared_component-sections-ActivityMap-meetingPointIco-3NUk" style="width:20px;height:19px;"> <div class="src-shared_component-sections-ActivityMap-meetingPointText-36s1"><div class="src-shared_component-sections-ActivityMap-blockTitle-3P1X">
+                            Meeting point:
+                          </div> <div data-test="ActivityComponent__meeting-point" class="src-shared_component-components-apiHtmlContent-1KaC src-shared_component-sections-ActivityMap-meetingPointTextHtml-1Hgk">{{ product.location}}</div></div></div> <div class="src-shared_component-sections-ActivityMap-eventMapBox-2bWK"><div class="src-shared_component-sections-ActivityMap-eventMapBoxWrapper-19wl"><section class="pointer"><img loading="lazy"></section></div> <button data-test="ActivityComponent__open-map" class="src-shared_component-atoms-msm_button-3mM6 src-shared_component-atoms-theme_white-2lsA src-shared_component-atoms-extendedMobile-3Rr2 src-shared_component-sections-ActivityMap-eventMapBtn-3pNO">Open map
+                        </button> <!----></div></div> <div><div class="src-shared_component-sections-ActivityRememberAbout-blockTitle-FRfC">
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+<script>
+    $(document).on('click', '#add-button', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "basket:basket_add" %}',
+            data: {
+                productid: $('#add-button').val(),
+                productqty: $('#select option:selected').text(),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post'
+            },
+            success: function (json) {
+               document.getElementById("basket-qty").innerHTML = json.qty
+            },
+            error: function (xhr, errmsg, err) {}
+        });
+    })
+</script>
+{% endblock %}
